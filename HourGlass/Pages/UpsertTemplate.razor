@@ -1,0 +1,97 @@
+﻿@page "/UpsertTemplate/"
+@page "/UpsertTemplate/{templateId:int}"
+@if (isDeleteConfirmationVisible)
+{
+    <div class="delete-confirmation hg-card card p-3">
+        <h1 class="text-center">Are you sure you want to delete your template?</h1>
+        <div class="row">
+            <div class="col d-flex justify-content-center mt-3">
+                <button class="hg-submit-button justify-content-center me-2" @onclick="HandleDeleteConfirmed">Yes</button>
+                <button class="hg-delete-btn justify-content-center me-2" @onclick="HandleCancelDelete">No</button>
+            </div>
+        </div>
+        
+    </div>
+}
+else
+{
+    <form @onsubmit="@(e => HandleSubmit())" class="container">
+        <div class="hg-card card p-3">
+            <div class="row">
+                @if (TemplateId != null)
+                {
+                    <h1 class="text-center"> Update Template</h1>
+                }
+                else
+                {
+                    <h1 class="text-center">Create Template</h1>
+                }
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label for="name">Name</label>
+                    <input required type="text" class="form-control" id="name" @bind="@TemplateName" />
+                </div>
+                <div class="form-group col-6">
+                    <label for="group">Group</label>
+                    <select required class="form-control" id="group" @bind="@SelectedGroup">
+                        @foreach (var groupName in AvailableGroups)
+                        {
+                            <option value="@groupName">@groupName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row pt-3">
+                <div class="form-group col-4">
+                    <label for="icon">Icon</label>
+                    <div class="icon-container">
+                        <div class="icon-wrapper">
+                            @foreach (var icon in AvailableIcons)
+                            {
+                                <div class="icon-item"
+                                @onclick="(() => SelectIcon(icon))">
+                                    <i class="fas @icon" style="cursor: pointer; color: @(icon == SelectedIcon ? "red" : "black")"></i>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-8">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="color">Color</label>
+                            <input type="color" class="form-control color-picker mt-1" id="color" @bind="@SelectedColor" />
+                        </div>
+                        <div class="col-6">
+                            <label for="recurring" class="">Recurring Session?</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="recurring" name="recurring">
+                                <label class="form-check-label" for="recurring"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col d-flex justify-content-center mt-3">
+                    @if (TemplateId != null)
+                    {
+                        <a class="hg-delete-btn justify-content-center me-2" role="button" @onclick="() => HandleDeleteRequest()">Delete</a>
+                    }
+                    <button class="hg-submit-button" type="submit">@(TemplateId != null ? "Update" : "Create")</button>
+                </div>
+            </div>
+
+
+
+        </div>
+    </form>
+}
+
+<div class="mt-4 col-md-12 d-flex justify-content-center">
+    <a class="hg-back-btn justify-content-center" role="button" @onclick="() => HandleBackRequest()">Go Back</a>
+</div>

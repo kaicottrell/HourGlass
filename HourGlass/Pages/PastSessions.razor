@@ -1,0 +1,48 @@
+﻿@page "/PastSessions"
+@using ApplicationCore.Models
+@using ApplicationCore.Interfaces
+@using Microsoft.AspNetCore.Components
+
+<h3 class="text-center">Sessions In The Last 7 Days</h3>
+
+@if (SessionList == null)
+{
+    <h1>You dont have any sessions</h1>
+}
+else
+{
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Template</th>
+                <th>Day</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Duration</th>
+                <th>Actions</th>
+                <!-- Add more columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var session in SessionList)
+            {
+                var textColor = IsDarkColor(@session.Template.TemplateColor) ? "text-white" : "text-black";
+                var gradientStartColor = @session.Template.TemplateColor; // Starting color for gradient
+                var gradientEndColor = GetTransitionColor(gradientStartColor, IsDarkColor(gradientStartColor)); // Get ending color for gradient
+
+                <tr class="@textColor" style="background: linear-gradient(to bottom, @gradientStartColor, @gradientEndColor)" @onclick="() => UpdateSession(session.Template.Id, session.Id)">
+                    <td>@session.Template.Name <i class="fas @session.Template.TemplateImage"></i></td>
+                    <td>@session.SessionStart.ToString("MMM. d")</td>
+                    <td>@session.SessionStart.ToString("hh:mm tt")</td>
+                    <td>@session.SessionEnd.ToString("hh:mm tt")</td>
+                    <td>@String.Format("{0:%h} hours {0:%m} minutes", session.Duration)</td>
+                    <td>
+                        <button class="hg-delete-solid-btn justify-content-center me-2" role="button" @onclick="() => HandleDeleteRequest(session.Id)" @onclick:stopPropagation="true">Delete</button>
+                    </td>
+                    <!-- Add more columns' data as needed -->
+                </tr>
+            }
+        </tbody>
+    </table>
+}

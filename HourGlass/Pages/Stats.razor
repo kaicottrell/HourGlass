@@ -1,0 +1,97 @@
+﻿<!-- StatsPage.razor -->
+@page "/Stats"
+<div class="container">
+    <h1 class="text-center mb-3">Time Metric Stats</h1>
+
+    @foreach (var group in ExtTGList)
+    {
+        <div class="card robot-card mb-5">
+            <div class="group-header" @onclick="() => ToggleDropdown(group)">
+                <span class="header-title">@group.Name @((group.ShowTemplates) ? "▼" : "▲")</span>
+                <span class="header-icon"></span>
+                
+                <!-- Added a div to ensure separate lines -->
+                <span class="total-hours d-block">Group's Total Hours:</span>
+                <span class="d-block">@GetHours(group)</span>
+                
+            </div>
+            <div class="template-cards row row-cols-1 row-cols-md-2 row-cols-lg-4 justify-content-center @((group.ShowTemplates) ? "block" : "d-none")">
+                @foreach (var template in GetAssociatedTemplates(group))
+                {
+                    var textColor = IsDarkColor(template.TemplateColor) ? "text-white" : "text-black";
+                    var gradientStartColor = template.TemplateColor; // Starting color for gradient
+                    var gradientEndColor = GetTransitionColor(gradientStartColor, IsDarkColor(gradientStartColor)); // Get ending color for gradient
+
+                    <div class="col d-flex flex-column mt-3">
+                        <div class="card robot-card @textColor mb-4 h-100 " style="background: linear-gradient(to bottom, @gradientStartColor, @gradientEndColor)">
+                           
+                            
+                            <!-- Other stats for the template -->
+                            <div class="d-block">
+                                <!-- Added a div to ensure separate lines -->
+                                <h4 class="card-title d-block">@template.Name</h4>
+                                <p class="card-text flex-fill d-block">Total Hours: @GetHours(template)</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                }
+            </div>
+
+
+
+        </div>
+    }
+</div>
+
+
+<style>
+    .card {
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease-in-out; /* Adding transition for card animation */
+    }
+
+    .group-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+        .group-header:hover {
+            background-color: #e0e0e0;
+        }
+
+    .header-icon {
+        font-size: 20px;
+        transition: transform 0.3s ease-in-out; /* Adding transition for icon animation */
+    }
+
+    .template-cards {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        transition: height 0.3s ease-in-out, opacity 0.3s ease-in-out; /* Adding transition for templates */
+        opacity: 1; /* Initially visible */
+        height: auto; /* Initially expandable */
+    }
+
+    .template-card {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        margin: 5px;
+        width: calc(33.33% - 10px); /* Adjust as needed */
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Adding transition for card animation */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adding shadow for depth effect */
+    }
+
+        .template-card:hover {
+            transform: translateY(-5px); /* Adding hover effect for depth */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Enhancing shadow on hover */
+        }
+</style>

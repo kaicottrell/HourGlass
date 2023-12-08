@@ -1,0 +1,77 @@
+﻿<!-- Index.razor -->
+@page "/"
+@using ApplicationCore.Models
+@using ApplicationCore.Interfaces
+@using Microsoft.AspNetCore.Components
+@inject IJSRuntime JsRuntime
+
+<PageTitle>Index</PageTitle>
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-12 col-md-6 justify-content-start">
+            <a class="hg-back-btn btn mb-4" role="button" @onclick="() => OpenCreateTemplate()">Create New <i class="bi bi-plus-circle"></i></a>
+        </div>
+    </div>
+
+
+
+
+    <div id="templates" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
+        @foreach (var template in TemplateList)
+        {
+            var textColor = IsDarkColor(template.TemplateColor) ? "text-white" : "text-black";
+            var iconColor = IsDarkColor(template.TemplateColor) ? "text-white" : "text-black";
+            var gradientStartColor = template.TemplateColor; // Starting color for gradient
+            var gradientEndColor = GetTransitionColor(gradientStartColor, IsDarkColor(gradientStartColor)); // Get ending color for gradient
+
+            <div class="col">
+                <div class="card animated position-relative h-100 robot-card"
+                     style="background: linear-gradient(to bottom, @gradientStartColor, @gradientEndColor)"
+                @onclick="() => OpenTemplateSession(template.Id)">
+                    <div class="text-center card-body p-4 robot-card-body">
+                        <i class="fas @template.TemplateImage hourglass-icon @iconColor"></i>
+                        <h5 class="hourglass-template-card-title card-title d-none d-sm-block @textColor">@template.Name</h5>
+                    </div>
+                    <div class="position-absolute top-0 end-0 mt-3 me-3">
+                        <button class="btn btn-link btn-sm" @onclick:stopPropagation="true"
+                        @onclick="() => EditTemplate(template.Id)">
+                            <i class="fas fa-cog @iconColor"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+
+
+
+
+</div>
+
+
+@* <div class="row">
+    <div style="text-align: center;">Weekly Stats</div>
+    <div class="col-3 card card-body m-1" id="bar-chart-container">
+        <!-- Bar chart will be created here -->
+    </div>
+    <div class="col-3 card card-body m-1">
+        <div id="pie-chart-container"></div>
+    </div>
+    <div class="col-3 card card-body m-1" id="weekly-stats">
+
+    </div>
+</div>
+
+<script suppress-error="BL9992" src="js/index.js"</script>
+<script suppress-error="BL9992" src="https://d3js.org/d3.v5.min.js"></script>
+ *@
+
+
+
+
+

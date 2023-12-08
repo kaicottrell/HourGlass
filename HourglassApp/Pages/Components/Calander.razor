@@ -1,0 +1,15 @@
+﻿@using System
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+
+@page "/calendar"
+
+<PageTitle>Calendar</PageTitle>
+
+<div>Enter a date: <InputDate @bind-Value="selectedDate" /> </div>
+<p role="status"><b>Selected date:</b> @selectedDate</p>
+
+
+@code {
+    private DateTime? selectedDate;
+}

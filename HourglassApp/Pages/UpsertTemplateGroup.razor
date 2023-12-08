@@ -1,0 +1,26 @@
+﻿@page "/UpsertTemplateGroup/"
+@page "/UpsertTemplateGroup/{TemplateGroupId:int}"
+
+<form @onsubmit="@(e => HandleSubmit())" class="container">
+    <div class="hg-card card p-3">
+        <h1 class="text-center">
+            @((TemplateGroupId != null) ? "Update" : "Create") Template Group
+        </h1>
+        <div class="row">
+            <div class="form-group col-12">
+                <label for="name">Name</label>
+                <input required type="text" class="form-control" id="name" @bind="@TemplateGroupName" />
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col d-flex justify-content-center mt-3">
+                <button class="hg-submit-button" type="submit">@(TemplateGroupId != null ? "Update" : "Create")</button>
+            </div>
+        </div>
+
+    </div>
+</form>
+<div class="mt-4 col-md-12 d-flex justify-content-center">
+    <a class="hg-back-btn justify-content-center" role="button" @onclick="() => HandleBackRequest()">Go Back</a>
+</div>

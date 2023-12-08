@@ -1,0 +1,78 @@
+﻿@page "/TemplateGroupSetup"
+
+@if (TGList == null)
+{
+    <h1 class="text-center">Create Your First Template Group!</h1>
+}
+else if (isDeleteConfirmationVisible)
+{
+    <div class="delete-confirmation hg-card card p-3">
+        <h1 class="text-center">Are you sure you want to delete your Template Group?</h1>
+        <b class="text-danger text-center"> All associated templates with this Template Group will also be deleted</b>
+        <div class="row">
+            <div class="col d-flex justify-content-center mt-3">
+                <button class="hg-submit-button justify-content-center me-2" @onclick="HandleDeleteConfirmed">Yes</button>
+                <button class="hg-delete-btn justify-content-center me-2" @onclick="HandleCancelDelete">No</button>
+            </div>
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="card">
+
+        <div class="d-none d-sm-flex align-items-center pb-2">
+            <!-- Applied d-sm-flex instead of d-sm-block -->
+            <div class="col-3">
+                <a class="hg-back-btn btn mb-4" role="button" @onclick="() => OpenCreateTemplateGroup()">Create New <i class="bi bi-plus-circle"></i></a>
+            </div>
+            <div class="col-6 text-center">
+                <h2 class="">Template Groups Dashboard</h2>
+            </div>
+        </div>
+
+        <div class="d-block d-sm-none">
+            <div class="col-12">
+                <a class="hg-back-btn btn mb-4" role="button" @onclick="() => OpenCreateTemplateGroup()">Create New <i class="bi bi-plus-circle"></i></a>
+            </div>
+            <div class="col-12 text-center">
+                <h2 class="">Template Groups Dashboard</h2>
+            </div>
+        </div>
+           
+        
+
+
+        <table class="style-table-futuristic">
+            <thead>
+                <tr>
+                    <th class="text-center">Group Name</th>
+                    <th class="text-center">Template Count</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tg in TGList)
+                {
+                    <tr @onclick="() => OpenCreateTemplateGroup(tg.Id)">
+                        <td class="text-center">@tg.Name</td>
+                        <td class="text-center">
+                            @GetAssociatedTemplateCount(tg)
+                        </td>
+                        <td class="text-center">
+                            <button class="hg-delete-solid-btn justify-content-center me-2" role="button" @onclick="() => HandleDeleteRequest(tg.Id)" @onclick:stopPropagation="true">Delete</button>
+                        </td>
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+
+    </div>
+}
+
+
+
+
