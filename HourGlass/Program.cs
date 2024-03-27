@@ -1,9 +1,14 @@
 using ApplicationCore.Interfaces;
 using ApplicationCore.Models;
+using ApplicationCore.Services;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
+
 
 using Microsoft.EntityFrameworkCore;
 
@@ -20,10 +25,20 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 
+builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrapProviders()
+    .AddFontAwesomeIcons();
+
 //change to application use not identity
 //builder.Services.AddIdentity<ApplicationUser, IdentityRole>();
 //	.AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitofWork, UnitofWork>();
+builder.Services.AddScoped<ColorService>();
+
 
 var app = builder.Build();
 

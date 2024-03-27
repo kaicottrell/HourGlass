@@ -1,48 +1,8 @@
-using Hourglass;
-using Hourglass.Shared;
-using ApplicationCore.Models;
-using ApplicationCore.Interfaces;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-
-namespace Hourglass.Pages
+﻿namespace ApplicationCore.Services 
 {
-    public partial class Index
+    public class ColorService
     {
-        [Inject]
-        private IUnitofWork? _unitofWork { get; set; }
-        private IEnumerable<Template>? TemplateList { get; set; }
-
-        private IEnumerable<Session>? SessionList { get; set; }
-
-        [Inject]
-        private NavigationManager Navigation { get; set; } // Inject NavigationManager
-
-        private void OpenTemplateSession(int templateID)
-        {
-            Navigation.NavigateTo($"/TemplateSession/{templateID}");
-        }
-        private void OpenCreateTemplate()
-        {
-            Navigation.NavigateTo("/UpsertTemplate/");
-        }
-
-        protected void EditTemplate(int templateId)
-        {
-            Navigation.NavigateTo($"/UpsertTemplate/{templateId}");
-        }
-
-        protected override void OnInitialized()
-        {
-            // Gather all of the templates associated with the user
-            // Can utilize a predicate function to gather the templates you want
-            TemplateList = _unitofWork.Template.List();
-
-            SessionList = _unitofWork.Session.List();
-
-            
-        }
-        bool IsDarkColor(string color)
+        public bool IsDarkColor(string color)
         {
             if (string.IsNullOrEmpty(color) || color.Length < 6 || !color.StartsWith("#"))
             {
@@ -65,7 +25,7 @@ namespace Hourglass.Pages
             return perceivedBrightness < 70; // Adjust this threshold for what you consider "dark"
         }
 
-        string GetTransitionColor(string color, bool isDark)
+        public string GetTransitionColor(string color, bool isDark)
         {
             var originalColor = System.Drawing.ColorTranslator.FromHtml(color);
             int delta = isDark ? 70 : -70; // Adjusted delta value for dark and light transitions
@@ -79,10 +39,6 @@ namespace Hourglass.Pages
         {
             return Math.Clamp(value, 0, 255); // Clamps the value between 0 and 255
         }
-
-
-
-
-
     }
+
 }

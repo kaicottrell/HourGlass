@@ -4,7 +4,6 @@ using global::System.Linq;
 using global::System.Threading.Tasks;
 using global::Microsoft.AspNetCore.Components;
 using System.Net.Http;
-using HourglassApp.Shared;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Models;
 
@@ -21,7 +20,7 @@ namespace HourglassApp.Pages
         private IEnumerable<Session>? SessionList { get; set; }
 
 
-        protected override void OnInitialized()
+        protected void OnInitialized()
         {
             // Gather all of the templates associated with the user
             // Can utilize a predicate function to gather the templates you want

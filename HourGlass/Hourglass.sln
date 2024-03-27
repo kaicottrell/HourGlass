@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\Common\Common.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HourglassApp", "..\HourglassApp\HourglassApp.csproj", "{19E7CEA1-6BC7-464A-AA8F-AD774B5EA64C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HourglassTests", "..\HourglassTests\HourglassTests.csproj", "{E972CF6E-FE40-493D-8496-72451314D0C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HourglassTests", "..\HourglassTests\HourglassTests.csproj", "{E972CF6E-FE40-493D-8496-72451314D0C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

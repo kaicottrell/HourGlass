@@ -1,0 +1,140 @@
+﻿@using Blazorise.Charts
+@using ApplicationCore.Models
+@using ApplicationCore.Interfaces
+@using ApplicationCore.Services
+<Chart @ref="barChart" Type="ChartType.Bar" TItem="double" Clicked="@OnClicked" />
+@code {
+    [Parameter]
+    public IEnumerable<Template>? TemplateList { get; set; }
+    [Parameter]
+    public IEnumerable<Session>? SessionList { get; set; }
+
+    [Inject]
+    private IUnitofWork? _unitofWork { get; set; }
+    [Inject]
+    private ColorService? _colorService { get; set; }
+    private Chart<double> barChart;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await HandleRedraw();
+        }
+    }
+
+    async Task HandleRedraw()
+    {
+        await barChart.Clear();
+
+        await barChart.AddLabelsDatasetsAndUpdate(GetLabels(), GetBarChartDataset());
+    }
+    private string[] GetLabels()
+    {
+        if (TemplateList == null)
+            return Array.Empty<string>(); // Return an empty array if TemplateList is null
+
+        return TemplateList.Select(template => template.Name).ToArray();
+    }
+    private BarChartDataset<double> GetBarChartDataset()
+    {
+        return new()
+            {
+                Label = "Time Spent (Minutes)",
+                Data = GetData(),
+                BackgroundColor = GetBackgroundColors(),
+                BorderColor = GetBorderColors(),
+                BorderWidth = 3
+            };
+    }
+
+    List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
+
+    List<double> GetData()
+    {
+        var dataList = SessionList
+            .GroupBy(session => session.TemplateId)
+            .Select(group => new
+            {
+                TemplateId = group.Key,
+                TotalDuration = group.Sum(session => (session.SessionEnd - session.SessionStart).TotalMinutes)
+            })
+            .ToList();
+
+        // Extract the total durations from the grouped data
+        var totalDurations = dataList.Select(item => item.TotalDuration).ToList();
+
+        return totalDurations;
+    }
+    private List<string> GetBackgroundColors()
+    {
+        if (TemplateList == null)
+            return new List<string>(); // Return an empty list if TemplateList is null
+
+        var backgroundColors = new List<string>();
+        foreach (var template in TemplateList)
+        {
+            // Extract the template color and convert it to a background color
+            string backgroundColor = _colorService.GetTransitionColor(template.TemplateColor, _colorService.IsDarkColor(template.TemplateColor));
+            RGBA rgbaColor = ConvertHexToRgba(backgroundColor);
+            backgroundColors.Add(ChartColor.FromRgba((byte)rgbaColor.R, (byte)rgbaColor.G, (byte)rgbaColor.B, rgbaColor.Alpha));
+        }
+
+        return backgroundColors;
+    }
+    private List<string> GetBorderColors()
+    {
+        if (TemplateList == null)
+            return new List<string>(); // Return an empty list if TemplateList is null
+
+        var backgroundColors = new List<string>();
+        foreach (var template in TemplateList)
+        {
+            // Extract the template color and convert it to a background color
+            string backgroundColor = _colorService.GetTransitionColor(template.TemplateColor, _colorService.IsDarkColor(template.TemplateColor));
+            RGBA rgbaColor = ConvertHexToRgba(backgroundColor);
+            backgroundColors.Add(ChartColor.FromRgba((byte)rgbaColor.R, (byte)rgbaColor.G, (byte)rgbaColor.B, 1f));
+        }
+
+        return backgroundColors;
+    }
+    public RGBA ConvertHexToRgba(string hexColor)
+    {
+        // Remove '#' symbol if present
+        hexColor = hexColor.Replace("#", "");
+
+        // Parse hexadecimal color components
+        int r = int.Parse(hexColor.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+        int g = int.Parse(hexColor.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+        int b = int.Parse(hexColor.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+
+        // Set alpha value (defaulting to 1)
+        float alpha = 0.5f;
+
+        // Construct RGBA object
+        return new RGBA(r, g, b, alpha);
+    }
+    public class RGBA
+    {
+        public int R { get; set; }
+        public int G { get; set; }
+        public int B { get; set; }
+        public float Alpha { get; set; }
+
+        public RGBA(int r, int g, int b, float alpha)
+        {
+            R = r;
+            G = g;
+            B = b;
+            Alpha = alpha;
+        }
+    }
+
+    Task OnClicked(ChartMouseEventArgs e)
+    {
+        var model = e.Model as BarChartModel;
+
+        Console.WriteLine($"Handling event for {nameof(BarChartModel)}: x:{model.X} y:{model.Y}");
+        return Task.CompletedTask;
+    }
+}

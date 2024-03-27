@@ -22,7 +22,7 @@ namespace ApplicationCore.Models
 		public DateTime SessionEnd { get; set; }
 		[Required]
         public TimeSpan Duration { get; set; }
-        int TemplateId { get; set; }
+        public int TemplateId { get; set; }
 		[ForeignKey("TemplateId")]
 		public virtual required Template Template { get; set; }
 		
